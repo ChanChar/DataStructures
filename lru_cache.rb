@@ -1,7 +1,15 @@
+# TODO: Improve LRUCache to use doubly linked and stores node inside the @cache
+
 class Node
   attr_accessor :val, :next_node
-  def initialize(val, next_node = nil)
+  def initialize(val, next_node = nil, prev_node = nil)
     @val = val
+    @next_node = next_node
+    @prev_node = prev_node
+  end
+
+  def remove
+    @prev_node.next_node = next_node
   end
 end
 
@@ -18,7 +26,9 @@ class LinkedList
     else
       current = @head
       current = current.next_node until current.next_node.nil?
-      current.next_node = Node.new(new_val)
+      new_node = Node.new(new_val)
+      current.next_node = new_node
+      new_node.prev_node = current
     end
     @link_length += 1
   end
@@ -26,16 +36,17 @@ class LinkedList
   def delete_link(val)
     current = @head
     previous = nil
-    until current.val == val
-      previous = current
-      current = current.next_node
-    end
+    # until current.val == val
+    #   previous = current
+    #   current = current.next_node
+    # end
 
     if current == @head
       @head = current.next_node
     else
-      previous.next_node = current.next_node
-      current.next_node = nil
+      current.remove
+      # previous.next_node = current.next_node
+      # current.next_node = nil
     end
     @link_length -= 1
   end
@@ -57,7 +68,7 @@ class LRUCache
   end
 
   def add(key, value)
-    if @cache[key]
+    if @cache.has_key?(key)
       raise 'Already exists'
     else
       @history.add_link(key)
@@ -66,7 +77,7 @@ class LRUCache
   end
 
   def get(input)
-    if @cache[input]
+    if @cache.has_key?(input)
       val = @cache[input]
       @history.delete_link(input)
       @history.add_link(input)

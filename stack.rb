@@ -1,3 +1,4 @@
+# MaxMin Stack
 class Stack
   def initialize
     @stack = []
@@ -8,11 +9,15 @@ class Stack
   end
 
   def peek
-    @stack.last[0]
+    @stack.last[0] if valid?
   end
 
   def pop
-    @stack.pop[0]
+    @stack.pop[0] if valid?
+  end
+
+  def empty?
+    @stack.empty?
   end
 
   def push(val)
@@ -27,10 +32,20 @@ class Stack
   end
 
   def min
-    @stack.last[1]
+    @stack.last[1] if valid?
   end
 
   def max
-    @stack.last[2]
+    @stack.last[2] if valid?
+  end
+
+  def valid?
+    !@stack.empty?
+    # if @stack.empty?
+    #   puts 'No more items in the stack!'
+    #   return false
+    # end
+    #
+    # true
   end
 end
